@@ -5,11 +5,9 @@ from PIL import Image
 st.set_page_config(page_title="AI Drawing Analysis", layout="wide")
 st.title("🔍 AI Document & Drawing Analysis")
 
-# Thử nghiệm kết nối với tên model cơ bản nhất
 try:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    # Sử dụng tên model ổn định nhất
-   model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("gemini-1.5-flash")
 except Exception as e:
     st.error(f"Lỗi cấu hình: {e}")
     st.stop()
@@ -35,17 +33,17 @@ if uploaded_files:
             input_data.append(img)
 
     if st.button("🚀 Bắt đầu Phân tích & So sánh"):
-        with st.spinner("AI đang xử lý, vui lòng đợi..."):
+        with st.spinner("AI đang xử lý..."):
             try:
-                prompt = "Hãy phân tích chi tiết các bản vẽ này bằng tiếng Việt. So sánh chúng nếu có nhiều hơn 1 hình."
-                # Gọi lệnh tạo nội dung
+                prompt = "Phân tích chi tiết các bản vẽ này bằng tiếng Việt. So sánh chúng nếu có nhiều hơn 1 hình."
                 response = model.generate_content([prompt] + input_data)
                 st.markdown("### 📊 Kết quả:")
                 st.write(response.text)
             except Exception as e:
-                st.error(f"Lỗi: {e}. Vui lòng kiểm tra lại phiên bản thư viện trong requirements.txt")
+                st.error(f"Lỗi: {e}")
 else:
     st.info("Vui lòng tải ảnh bản vẽ hoặc file PDF lên.")
+
 
 
 

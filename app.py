@@ -2,50 +2,38 @@ import streamlit as st
 import google.generativeai as genai
 from PIL import Image
 
-st.set_page_config(page_title="AI Drawing Analysis", layout="wide")
-st.title("🔍 AI Document & Drawing Analysis")
+st.set_page_config(page_title="AI Analysis", layout="wide")
+st.title("🔍 AI Drawing Analysis")
 
+# Kết nối API và Model
 try:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-   model = genai.GenerativeModel("gemini-pro-vision")
+    model = genai.GenerativeModel("gemini-pro-vision")
 except Exception as e:
-    st.error(f"Lỗi cấu hình: {e}")
+    st.error(f"Lỗi: {e}")
     st.stop()
 
-uploaded_files = st.file_uploader(
-    "Tải lên bản vẽ (Ảnh hoặc PDF)...", 
-    type=["png", "jpg", "jpeg", "pdf"], 
-    accept_multiple_files=True
-)
+# Tải ảnh
+files = st.file_uploader("Tải lên các bản vẽ (Ảnh)...", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
 
-if uploaded_files:
-    st.success(f"Đã nhận {len(uploaded_files)} file.")
-    input_data = []
-    cols = st.columns(len(uploaded_files))
+if files:
+    st.success(f"Đã nhận {len(files)} ảnh.")
+    imgs = [Image.open(f) for f in files]
     
-    for i, file in enumerate(uploaded_files):
-        if file.type == "application/pdf":
-            st.info(f"📄 {file.name}")
-            input_data.append({"mime_type": "application/pdf", "data": file.getvalue()})
-        else:
-            img = Image.open(file)
-            cols[i].image(img, caption=file.name, use_container_width=True)
-            input_data.append(img)
-
-    if st.button("🚀 Bắt đầu Phân tích & So sánh"):
-        with st.spinner("AI đang xử lý..."):
+    # Hiển thị ảnh
+    cols = st.columns(len(imgs))
+    for i, img in enumerate(imgs):
+        cols[i].image(img, use_container_width=True)
+    
+    # Nút phân tích
+    if st.button("🚀 Bắt đầu Phân tích"):
+        with st.spinner("AI đang so sánh..."):
             try:
-                prompt = "Phân tích chi tiết các bản vẽ này bằng tiếng Việt. So sánh chúng nếu có nhiều hơn 1 hình."
-                response = model.generate_content([prompt] + input_data)
+                prompt = "Hãy so sánh chi tiết sự khác biệt giữa các bản vẽ này bằng tiếng Việt."
+                response = model.generate_content([prompt] + imgs)
                 st.markdown("### 📊 Kết quả:")
                 st.write(response.text)
             except Exception as e:
-                st.error(f"Lỗi: {e}")
+                st.error(f"Lỗi khi gọi AI: {e}")
 else:
-    st.info("Vui lòng tải ảnh bản vẽ hoặc file PDF lên.")
-
-
-
-
-
-
+    st.info("Vui lòng tải ảnh lên để bắt đầu.")

@@ -63,4 +63,5 @@ if uploaded_files:
                 st.error(f"Đã xảy ra lỗi khi xử lý: {e}")
 
 else:
-    st.info("Vui lòng tải ảnh bản vẽ hoặc file PDF
+    st.info("Vui lòng tải ảnh bản vẽ hoặc file PDF")
+

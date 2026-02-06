@@ -7,7 +7,7 @@ st.title("🔍 AI Document & Drawing Analysis")
 
 try:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    model = genai.GenerativeModel("gemini-1.5-flash")
+   model = genai.GenerativeModel("gemini-pro-vision")
 except Exception as e:
     st.error(f"Lỗi cấu hình: {e}")
     st.stop()
@@ -43,6 +43,7 @@ if uploaded_files:
                 st.error(f"Lỗi: {e}")
 else:
     st.info("Vui lòng tải ảnh bản vẽ hoặc file PDF lên.")
+
 
 
 
